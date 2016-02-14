@@ -3,6 +3,7 @@ defaults = {
   [":)"] = "SMILE", -- "SMILE"
   [":("] = "CRY", -- "CRY"
 }
+local disabled = false
 local EmoValidate = {}
 local CopyTable
 CopyTable = function(t,copied)
@@ -56,17 +57,20 @@ local help = function()
   Print("    example: /chatemote link o_O CONFUSED")
   Print("/chatemote unlink EMOTE")
   Print("    removes the link to EMOTE")
+  Print("/chatemote toggle")
+  Print("    enable or disable the addon")
 end
-events.VARIABLES_LOADED = function(self,event)
-  if not next(ChatEmoteDB) then
-    ChatEmoteDB = CopyTable(defaults)
-    Print("copied defaults")
-  end
-  SendChatMessage = ChatEmoteSendChatMessage
-  local i = 1
-  while getglobal("EMOTE"..i.."_TOKEN") ~= nil do
-    EmoValidate[getglobal("EMOTE"..i.."_TOKEN")]=true
-    i = i+1
+
+local toggle = function()
+  if disabled then
+    SendChatMessage = ChatEmoteSendChatMessage
+    disabled = false
+    Print("Enabled.")
+  else
+    SendChatMessage = orig_SendChatMessage
+    disabled = true
+    Print("Disabled.")
+    Print("    Use /chatemote toggle again to re-enable")
   end
 end
 
@@ -86,7 +90,6 @@ SlashCmdList["CHATEMOTE"] = function(msg)
     if argn > 0 then
       local cmd = args[1]
       if cmd == "list" then
-        local emo_count = t_count(EmoValidate)
         if not next(tempT) then
           for e in pairs(EmoValidate) do
             table.insert(tempT,e)
@@ -123,14 +126,26 @@ SlashCmdList["CHATEMOTE"] = function(msg)
           for k,v in pairs(ChatEmoteDB) do
             if args[2] == v then
               ChatEmoteDB[k] = nil
-              break
             end
           end
         end
+      elseif cmd == "toggle" then
+        toggle()
       end
     else
       help()
     end
+  end
+end
+events.VARIABLES_LOADED = function(self,event)
+  if not next(ChatEmoteDB) then
+    ChatEmoteDB = CopyTable(defaults)
+  end
+  SendChatMessage = ChatEmoteSendChatMessage
+  local i = 1
+  while getglobal("EMOTE"..i.."_TOKEN") ~= nil do
+    EmoValidate[getglobal("EMOTE"..i.."_TOKEN")]=true
+    i = i+1
   end
 end
 SlashCmdList["CEMO"] = SlashCmdList["CHATEMOTE"]
