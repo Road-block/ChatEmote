@@ -1,0 +1,7 @@
+## Interface: 11200
+## Author: Roadblock
+## Title: Chat to Emote
+## Notes: Convert chat emoticons to Emotes.
+## SavedVariables: ChatEmoteDB
+## Version: 1.0
+core.lua
