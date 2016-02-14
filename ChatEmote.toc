@@ -3,5 +3,5 @@
 ## Title: Chat to Emote
 ## Notes: Convert chat emoticons to Emotes. /chatemote or /cemo for help.
 ## SavedVariables: ChatEmoteDB
-## Version: 1.1
+## Version: 1.11
 core.lua

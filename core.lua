@@ -94,26 +94,30 @@ SlashCmdList["CHATEMOTE"] = function(msg)
           for e in pairs(EmoValidate) do
             table.insert(tempT,e)
           end
-          table.sort(tempT,reverse)           
+          table.sort(tempT,reverse)
         end
-        for i,e in ipairs(tempT) do
-          count = count + 1
+        local num_emotes = table.getn(tempT)
+        for i=1,num_emotes do
+          count = count + 1 
           Print(table.remove(tempT))
-          if count > 10 then
+          local remain = table.getn(tempT)
+          if (count > 9 and remain > 0) then
             Print("    /chatemote list for more")
             count = 0
             return
           end
         end
-        count, tempT = 0, {}
-        Print("    emote list complete")       
+        if table.getn(tempT) == 0 then
+          Print("    Emote list complete")
+          count,tempT = 0,{}
+        end
       elseif cmd == "link" then
         if argn < 3 then
           Print("/chatemote link emoticon EMOTE")
           Print("    example: /chatemote link o_O CONFUSED")
         else 
           if not EmoValidate[args[3]] then
-            Print(""..args[3].." is not a valid Emote")
+            Print(args[3].." is not a valid Emote")
           else
             ChatEmoteDB[args[2]] = args[3]
           end
